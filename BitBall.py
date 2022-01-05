@@ -1,0 +1,1630 @@
+
+import random
+import time
+import sqlite3
+
+while True:
+
+        conn=sqlite3.connect('player_database.db')
+        C=conn.cursor()
+
+        teams=['Aave Ghosts','Alchemix Conjurers','Abracadabra Wizards','Olympus Omegas','Uniswap Unicorns','Convex Curves','Compound Dragons','Chainlink Frogs','Rari Whales','Fractional NFT']
+        randomize = 0
+
+        # if randomize == 0:
+
+
+        # # print()
+        # # print("Please enter the name of the first team: ")
+        # # Team1name = input()
+        #         Team1name = "Abracadabra Wizards"
+
+
+        # # print()
+        # # print("Please enter the name of the second team: ")
+        # # Team2name = input()
+        #         Team2name = "Olympus Omegas"
+
+        # if randomize > 0:
+
+        t1dice = random.randint(0,9)
+        t2dice = random.randint(0,9)
+        while t1dice == t2dice:
+                t2dice = random.randint(0,9)
+        Team1name = teams[t1dice]
+        Team2name = teams[t2dice]
+                       
+
+        #Define dice_roll function that accepts one argument that is equal to number of sides on dice rolled
+
+        def dice_roll(d):
+                result = random.randint(1,d)
+                return result
+
+        #Define Statgen function that rolls 4d6, drops the lowest number, and sums the remaining 3
+
+        # def Statgen():
+        #         dice = [dice_roll(6),dice_roll(6),dice_roll(6),dice_roll(6)]
+        #         stat = []
+        #         dice.sort()
+        #         stat.append(dice[1])
+        #         stat.append(dice[2])
+        #         stat.append(dice[3])
+        #         stat = stat[0]+stat[1]+stat[2]
+        #         return stat
+                
+   
+                
+        #Create superclass Player
+        class Player:
+                def __init__(self,keeper,refnum,team):
+                        self.refnum = refnum
+                        self.team = team
+                        (C.execute("SELECT name FROM players WHERE team=:team GROUP BY name HAVING refnum=:refnum",{"team":self.team,"refnum":self.refnum}))
+                        self.name = C.fetchone()[0]
+                        (C.execute("SELECT str_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.STR = C.fetchone()[0]
+                        (C.execute("SELECT dex_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.DEX = C.fetchone()[0]
+                        (C.execute("SELECT wis_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.WIS = C.fetchone()[0]
+                        (C.execute("SELECT cha_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.CHA = C.fetchone()[0]
+                        (C.execute("SELECT mag_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.MAG = C.fetchone()[0]
+                        (C.execute("SELECT dmag_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.DMAG = C.fetchone()[0]
+                        self.keeper = keeper
+                        (C.execute("SELECT gk_mod FROM players WHERE name =:name",{"name":self.name}))
+                        self.GK = C.fetchone()[0]
+                        (C.execute("SELECT name FROM captains WHERE team =:team",{"team":self.team}))
+                        if C.fetchone()[0] == self.name:
+                                self.captain = True
+                                
+                        else:
+                                self.captain = False
+
+                        self.ini = dice_roll(20)+self.DEX
+                        self.HP = 100
+                        self.inv = []
+                        self.graveyard = False
+                        
+
+                def takedmg(self):
+                        self.HP -= 5
+                        if "cursed item" in self.inv:
+                                print()
+                                print ("A curse haunts",self.name)
+                                self.HP -=2
+                        if self.HP <=0:
+                                print()
+                                print (self.name, "is gravely injured!")
+                                self.graveyard = True
+                                self.STR = -99
+                                self.DEX = -99
+                                self.WIS = -99
+                                self.CHA = -99
+                                self.MAG = -99
+                                self.DMAG = -99
+                                self.GK = -99
+                                self.ini = -99
+                                print()
+                                print("They carry on, but the sight isn't pretty")
+
+                        print()
+                        if self.HP > 0:
+                                print (self.name,"HP: ",self.HP)
+
+        swingcount = 0
+        tipoff = True
+        def fight(fighter1,fighter2):
+                if tipoff == True:
+                        print()
+                        print("The two team captains struggle for control of the ball.")
+                if tipoff == False:
+                        print()
+                        print("A fight has broken out in the BitBall Pit between ",fighter1.name," and ",fighter2.name,"!")
+                time.sleep(2)
+                global swingcount
+                while swingcount < 10:
+
+                        if fighter2.HP < fighter1.HP:
+                                def swing():
+                                        global swingcount
+                                        swingcount = swingcount
+                                        swing = dice_roll(20) + fighter2.STR + fighter2.WIS + fighter2.DEX
+                                        swingcount +=1
+                                        if swing >= 15:
+                                                
+                                                print()
+                                                print(fighter1.name," takes a nasty hit.")
+                                                time.sleep(.5)
+                                                fighter1.takedmg()
+                                        else:
+                                
+                                                if swing < 15 and swing > 10:
+                                                        print()
+                                                        print(fighter2.name," grazes ",fighter1.name,".")
+                                                        time.sleep(.5)
+                                                        
+                                                elif swing < 10 and swing > 5:
+                                                        print()
+                                                        print(fighter1.name," quickly dodges an attack!")
+                                                        time.sleep(.5)
+                                                        
+
+                                                elif swing < 5 and swing > 0:
+                                                        print()
+                                                        print(fighter2.name,"'s fists meet the air.")
+                                                        time.sleep(.5)
+                                                        
+                                                else:
+                                                        print()
+                                                        print("A weak attempt by ",fighter2.name,".")
+                                                        time.sleep(.5)
+                                                        
+                                swing()
+                                def combo():
+                                        coin = dice_roll(2)
+                                        if coin == 1:
+                                                swing()
+                                                
+                                combo()
+                                combo()
+
+
+                        else:
+                                def swing():
+                                        global swingcount
+                                        swingcount = swingcount
+                                        swing = dice_roll(20) + fighter1.STR + fighter1.WIS + fighter1.DEX
+                                        swingcount +=1
+                                        if swing > 15:
+                                                print()
+                                                print(fighter2.name," takes a nasty hit.")
+                                                time.sleep(.5)
+                                                fighter2.takedmg()
+                                        else:
+                                                if swing < 15 and swing > 10:
+                                                        print()
+                                                        print(fighter1.name," grazes ",fighter2.name,".")
+                                                        time.sleep(.5)
+                                                elif swing < 10 and swing > 5:
+                                                        print()
+                                                        print(fighter2.name," quickly dodges an attack!")
+                                                        time.sleep(.5)
+
+                                                elif swing < 5 and swing > 0:
+                                                        print()
+                                                        print(fighter1.name,"'s fists meet the air.")
+                                                        time.sleep(.5)
+                                                else:
+                                                        print()
+                                                        print("A weak attempt by ",fighter1.name,".")
+                                                        time.sleep(.5)
+                                swing()
+                                def combo():
+                                        coin = dice_roll(2)
+                                        if coin == 1:
+                                                swing()
+                                combo()
+                                combo()
+
+                if swingcount >= 10:
+                        if tipoff == True:
+                                print()
+                                print("The dust settles around the struggle...")
+                        if tipoff == False:
+                                print ()
+                                print ("The bloodied players return to the game.")
+                        time.sleep(2)
+                        swingcount = 0
+
+
+        def hyped(self):
+                        print()
+                        print(self.name,"get hyped!")
+                        print()
+                        time.sleep(2)
+                        for Player in self.team:
+                                wheel = ["X",Player.STR,Player.DEX,Player.WIS,Player.CHA,Player.MAG,Player.DMAG]
+                                spin = dice_roll(6)
+                                if spin == 1:
+                                        Player.STR += 1
+                                        print (Player.name,"feels a boost of energy!")
+                                        print() 
+                                        time.sleep(2)
+                                if spin == 2:
+                                        Player.DEX += 1
+                                        print (Player.name,"gets an idea!")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 3:
+                                        Player.WIS += 1
+                                        print (Player.name, "understands.")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 4:
+                                        Player.CHA += 1
+                                        print (Player.name, "keeps spirit!")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 5:
+                                        Player.MAG += 1
+                                        print (Player.name, "learned a spell.")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 6:
+                                        Player.DMAG += 1
+                                        print (Player.name,"has a sly look about them.")
+                                        print()
+                                        time.sleep(2)
+                        
+
+
+
+
+        newlist=[]
+        loopcount=0
+        pos=[]
+        silence = 0
+
+        #Initialize scores
+        ScoreA=0
+        ScoreB=0
+
+        #Initialize team pass counters
+        TeamAPass=0
+        TeamBPass=0
+
+        #Initialize foul counter for both teams
+        FoulA=0
+        FoulB=0
+
+        #Initialize run counter for both teams
+        Aruncount=0
+        Bruncount=0
+
+        #How long the game lasts
+        seconds = 1200
+
+        #Make start time current time at beginning of game
+        start_time = time.time()
+
+        #Creates 10 named players
+
+        P1 = Player(True,1,Team1name)
+        P2 = Player(False,2,Team1name)
+        P3 = Player(False,3,Team1name)
+        P4 = Player(False,4,Team1name)
+        P5 = Player(False,5,Team1name)
+         
+        P6 = Player(True,1,Team2name)
+        P7 = Player(False,2,Team2name)
+        P8 = Player(False,3,Team2name)
+        P9 = Player(False,4,Team2name)
+        P10 = Player(False,5,Team2name)
+
+        #Puts them onto TeamA
+        
+
+        TeamA = [P1.name,P2.name,P3.name,P4.name,P5.name]
+        PTeamA = [P1,P2,P3,P4,P5]
+        print("Your captains are: ")
+        print()
+        print(Team1name,":")
+        for player in PTeamA:
+                if player.captain == True:
+                        captainA = player
+                        print (player.name)
+
+        for Player in PTeamA:
+                if Player.keeper == True:
+                        KeeperA = Player
+
+        #Or TeamB
+
+        TeamB = [P6.name,P7.name,P8.name,P9.name,P10.name]
+        PTeamB = [P6,P7,P8,P9,P10]
+
+      
+        for Player in PTeamB:
+                if Player.keeper == True:
+                        KeeperB = Player
+
+        print()
+        print(Team2name,":")
+        for player in PTeamB:
+                if player.captain == True:
+                        captainB = player
+                        print (player.name)                
+
+        # BenchA =[Player("GhostA1",False,Team1name),
+        #         Player("GhostA2", False, Team1name)]
+        # BenchB =[Player("GhostB1",False, Team2name)],
+        #         Player("GhostB2",False,Team2name)]
+
+
+        class Team1:
+                name = Team1name
+                team = PTeamA
+        
+
+
+        class Team2:
+                name = Team2name
+                team = PTeamB
+
+
+        def struggle():
+                global tipoff
+                print()
+                print("The team captains prepare for tip off...")
+                time.sleep(4)
+                print()
+                print("The BitBall is launched from the center diamond!")
+                time.sleep(.5)
+                fight(captainA,captainB)
+                if captainA.HP > captainB.HP:
+                        print()
+                        print(captainA.name,"wins the struggle and",Team1name,"have the ball")
+                        pos = ['Team A']
+                else: 
+                        print()
+                        print(captainB.name,"wins the struggle and",Team2name,"have the ball")
+                        pos = ['Team B']
+                tipoff = False
+        struggle()
+
+        #start defining the game
+        def gameloop():
+                #Calls global scores and pass counters
+                global ScoreA
+                global ScoreB
+                global TeamAPass
+                global TeamBPass
+                global FoulA
+                global FoulB
+                global Aruncount
+                global Bruncount
+                global captainA
+                global captainB
+                P1.ini = dice_roll(20)+P1.DEX
+                P2.ini = dice_roll(20)+P2.DEX
+                P3.ini = dice_roll(20)+P3.DEX
+                P4.ini = dice_roll(20)+P4.DEX
+                P5.ini = dice_roll(20)+P5.DEX
+                P6.ini = dice_roll(20)+P6.DEX
+                P7.ini = dice_roll(20)+P7.DEX
+                P8.ini = dice_roll(20)+P8.DEX
+                P9.ini = dice_roll(20)+P9.DEX
+                P10.ini = dice_roll(20)+P10.DEX
+
+        #Orders players by their initiatives
+                T1order=[]
+                T2order=[]
+                Order = [
+                        (P1,P1.name,P1.ini),
+                        (P2,P2.name,P2.ini),
+                        (P3,P3.name,P3.ini),
+                        (P4,P4.name,P4.ini),
+                        (P5,P5.name,P5.ini),
+                        (P6,P6.name,P6.ini),
+                        (P7,P7.name,P7.ini),
+                        (P8,P8.name,P8.ini),
+                        (P9,P9.name,P9.ini),
+                        (P10,P10.name,P10.ini),]
+                Ordered = sorted(Order, key=lambda player: player[2])
+                #print (Ordered)
+                for player in Ordered: 
+                        if player[1] in TeamA:
+                                T1order.append(player[1])
+                for player in Ordered: 
+                        if player[1] in TeamB:
+                                T2order.append(player[1])
+                                        
+                
+
+        #Unpacks first and last tuple in "Ordered" list       
+
+                (player1,firstname,firstini)=Ordered[9]
+                (player2,secondname,secondini)=Ordered[8]
+                (player3,thirdname,thirdini)=Ordered[7]
+                (player4,fourthname,fourthini)=Ordered[6]
+                (player5,fifthname,fifthini)=Ordered[5]
+                (player6,sixthname,sixthini)=Ordered[4]
+                (player7,seventhname,seventhini)=Ordered[3]
+                (player8,eighthname,eightini)=Ordered[2]
+                (player9,ninthame,ninthini)=Ordered[1]
+                (player10,lastname, lastini)=Ordered[0]
+
+                def getini():
+                        
+
+                        P1.ini = dice_roll(20)+P1.DEX
+                        P2.ini = dice_roll(20)+P2.DEX
+                        P3.ini = dice_roll(20)+P3.DEX
+                        P4.ini = dice_roll(20)+P4.DEX
+                        P5.ini = dice_roll(20)+P5.DEX
+                        P6.ini = dice_roll(20)+P6.DEX
+                        P7.ini = dice_roll(20)+P7.DEX
+                        P8.ini = dice_roll(20)+P8.DEX
+                        P9.ini = dice_roll(20)+P9.DEX
+                        P10.ini = dice_roll(20)+P10.DEX
+
+                #Orders players by their initiatives
+
+                        Order = [
+                                (P1,P1.name,P1.ini),
+                                (P2,P2.name,P2.ini),
+                                (P3,P3.name,P3.ini),
+                                (P4,P4.name,P4.ini),
+                                (P5,P5.name,P5.ini),
+                                (P6,P6.name,P6.ini),
+                                (P7,P7.name,P7.ini),
+                                (P8,P8.name,P8.ini),
+                                (P9,P9.name,P9.ini),
+                                (P10,P10.name,P10.ini),]
+                        Ordered = sorted(Order, key=lambda player: player[2])
+
+                        for player in Ordered: 
+                                if player in TeamA:
+                                        T1order.append(player[1])
+                        for player in Ordered: 
+                                if player in TeamB:
+                                        T2order.append(player[1])
+                        for player in Ordered:
+                                if player[0].graveyard == True:
+                                        if player[0].name not in newlist:
+                                                newlist.append(player[0].name)
+
+                                        player[0].ini = -99
+                                        return Ordered
+                                        print (Ordered)
+
+                #Unpacks first and last tuple in "Ordered" list       
+
+                        (player1,firstname,firstini)=Ordered[9]
+                        (player2,secondname,secondini)=Ordered[8]
+                        (player3,thirdname,thirdini)=Ordered[7]
+                        (player4,fourthname,fourthini)=Ordered[6]
+                        (player5,fifthname,fifthini)=Ordered[5]
+                        (player6,sixthname,sixthini)=Ordered[4]
+                        (player7,seventhname,seventhini)=Ordered[3]
+                        (player8,eighthname,eightini)=Ordered[2]
+                        (player9,ninthame,ninthini)=Ordered[1]
+                        (player10,lastname, lastini)=Ordered[0] 
+
+                def loot():
+                        print()
+                        print(player1.name,"looks around for loot...")
+                        print()
+                        time.sleep(1)
+                        lootroll = dice_roll(20)
+                        if lootroll == 20:
+                                inventory = player1.inv
+                                if "small item" not in inventory:
+                                        inventory.append("small item")
+                                #print(player1.inv)
+                                print ("...and found something.")
+                                print()
+                                Player = player1
+                                wheel = ["X",Player.STR,Player.DEX,Player.WIS,Player.CHA,Player.MAG,Player.DMAG]
+                                spin = dice_roll(6)
+                                if spin == 1:
+                                        Player.STR += 1
+                                        print (Player.name,"feels a boost of energy!") 
+                                        print()
+                                        time.sleep(2)
+                                if spin == 2:
+                                        Player.DEX += 1
+                                        print (Player.name,"gets an idea!")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 3:
+                                        Player.WIS += 1
+                                        print (Player.name, "understands.")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 4:
+                                        Player.CHA += 1
+                                        print (Player.name, "keeps spirit!")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 5:
+                                        Player.MAG += 1
+                                        print (Player.name, "learned a spell.")
+                                        print()
+                                        time.sleep(2)
+                                if spin == 6:
+                                        Player.DMAG += 1
+                                        print (Player.name,"has a sly look about them.")
+                                        print()
+                                        time.sleep(2)
+                                time.sleep(1)
+                        elif lootroll == 1:
+                                inventory = player1.inv
+                                if "cursed item" not in inventory:
+                                        inventory.append("cursed item")
+                                print(player1.inv)
+                                time.sleep(1)
+                                print ("...and didn't like what they found.")
+                        else:
+                                print("...but found nothing.")
+                                time.sleep(1)
+                                
+
+                #Will define a function that compares teams' weighted stats and pits 
+                #them against each other in a struggle *
+
+                # def war():
+                #      print ("!WAR!")   
+                
+
+                #defines a function that calls a penalty shot to occur
+                def penalty():
+                        global ScoreA
+                        global ScoreB
+                        if player1.name in TeamA and player2.name in TeamA:
+                                while player1.name in TeamA and player2.name in TeamA:
+                                        Ordered.pop(len(Ordered)-1)
+                                        Ordered.insert(0,0,)
+                                        return Ordered
+                                
+                        if player1.name in TeamB and player2.name in TeamB:
+                                while player1.name in TeamB and player2.name in TeamB:
+                                        Ordered.pop(len(Ordered)-1)
+                                        Ordered.insert(0,0,)
+                                        return Ordered
+                                
+                        #condition for player1 to score for TeamA
+                        if player1.name in TeamA:
+                                print()
+                                print (player1.name,"approaches the center diamond for a penalty shot.")
+                                time.sleep(4)
+                                print()
+                                print (KeeperB.name,"clears the",Team2.name,"Ring.")
+                                time.sleep(4)
+                                print()
+                                print ("The sound of grinding metal fills the air.")
+                                time.sleep(4)
+                                print()
+                                print ("The",Team2.name,"Ring tilts to a horizontal position.")
+                                time.sleep(4)
+                                print()
+                                print (player1.name,"lines up their trajectory...")
+                                time.sleep(5)
+                                print()
+                                print("...and launches the ball!")
+                                time.sleep(4)
+                                print()
+                                print ("(The",Team2.name,"keeper braces as they watch helplessly)")
+                                time.sleep(1)
+                                roll = dice_roll(20)
+
+                                if player1.MAG+roll >= 24:
+                                        ScoreA+=4
+                                        print()
+                                        print(player1.name,"scores 4 for the",Team1.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        roll = dice_roll(6)
+                                        if roll == 6:
+                                                if player1.team == Team1name:
+                                                        hyped(Team1)
+                                                if player1.team == Team2name:
+                                                        hyped(Team2)
+                                        
+                                elif player1.MAG+roll >= 20:
+                                        ScoreA+=3
+                                        print()
+                                        print(player1.name,"scores 3 for the",Team1.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                       
+                                elif player1.MAG+roll >= 15:
+                                        ScoreA+=2
+                                        print()
+                                        print(player1.name,"scores 2 for the",Team1.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                elif player1.MAG+roll >= 10:
+                                        ScoreA+=1
+                                        print()
+                                        print(player1.name,"scores 1 for the",Team1.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                else:
+                                        print()
+                                        print("An unfortunate miss.")
+                                        time.sleep(2)
+                                        print()
+                                        print("The",Team2.name,"keeper returns to their position.")
+                                        time.sleep(1)
+                                        print()
+                                        print("Play resumes.")
+                                        time.sleep(2)
+                        #Condition for player1 to score for TeamB
+                        else:
+                                print()
+                                print (player1.name,"approaches the center diamond for a penalty shot.")
+                                time.sleep(4)
+                                print()
+                                print (KeeperA.name,"clears the",Team1.name,"Ring.")
+                                time.sleep(4)
+                                print()
+                                print ("The crowd roars in anticipation.")
+                                time.sleep(4)
+                                print()
+                                print ("The",Team1.name,"Ring tilts to a horizontal position.")
+                                time.sleep(4)
+                                print()
+                                print (player1.name,"lines up their trajectory...")
+                                time.sleep(5)
+                                print()
+                                print("...and launches the ball!")
+                                time.sleep(4)
+                                print()
+                                print ("(The",Team1.name,"keeper braces as they watch helplessly)")
+                                time.sleep(1)
+                                roll = dice_roll(20)
+                
+
+                                if player1.MAG+roll >= 24:
+                                        ScoreB+=4
+                                        print()
+                                        print(player1.name,"scores 4 for the",Team2.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                elif player1.MAG+roll >= 20:
+                                        ScoreB+=3
+                                        print()
+                                        print(player1.name,"scores 3 for the",Team2.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                elif player1.MAG+roll >= 15:
+                                        ScoreB+=2
+                                        print()
+                                        print(player1.name,"scores 2 for the",Team2.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                elif player1.MAG+roll >= 10:
+                                        ScoreB+=1
+                                        print()
+                                        print(player1.name,"scores 1 for the",Team2.name,"!")
+                                        time.sleep(3)
+                                        print()
+                                        print(Team1.name, ": ",ScoreA)
+                                        print()
+                                        print(Team2.name, ": ",ScoreB)
+                                        
+                                else:
+                                        print()
+                                        print("An unfortunate miss.")
+                                        time.sleep(2)
+                                        print()
+                                        print("The",Team1.name,"keeper returns to their position.")
+                                        time.sleep(1)
+                                        print()
+                                        print("Play resumes.")
+                                        time.sleep(2)
+                
+                #Series of checks for game loop
+                
+                def checks():
+                        global FoulA
+                        global FoulB
+                        global TeamAPass
+                        global TeamBPass
+                        global ScoreB
+                        global ScoreA
+                        global Aruncount
+                        global Bruncount
+                        global newlist
+                        global loopcount
+                        global pos
+                        global previous
+                        global silence
+                        global Player
+                        global captainA
+                        global captainB
+                        
+                        
+                        #Checks length of newlist. If all players have appeared in text and have been added to newlist, starts a new round.
+                        #Additionally, Players now look for loot at the beginning of each new round.
+                        if len(newlist)>=10:
+                                newlist=[]
+                                getini()
+                                #print()
+                                #New round console check
+                                #print("IT'S A NEW ROUND!")
+                                time.sleep(2)
+                                loot()
+
+                        # Checks for players with 0 HP and removes them from the initiative ordering list (Ordered)
+                        for player in Ordered:
+                                if player[0].graveyard == True:
+                                        if player[0].name not in newlist:
+                                                newlist.append(player[0].name)
+
+                                        Ordered.remove(player)
+
+
+                        #Checks for team possession
+
+                        if pos == ['TeamA']:
+                                while player1.name not in TeamA:
+                                                Ordered.pop()
+                                                Ordered.insert(0,0,)
+                                                return Ordered
+                                pos = []
+                        if pos == ['TeamB']:
+                                while player1.name not in TeamB:
+                                                Ordered.pop()
+                                                Ordered.insert(0,0,)
+                                                return Ordered
+                                pos = []
+
+                        #Checks for keeper to "make sure they stay in their ring" (don't appear in text making plays)
+                                
+                        if player1.keeper == True:
+                                if player1.name not in newlist:
+                                        newlist.append(player1.name)
+                                Ordered.pop()
+                                return Ordered
+                        if player2.keeper == True:
+                                if player2.name not in newlist:
+                                        newlist.append(player2.name)
+                                Ordered.pop()
+                                return Ordered
+                        
+                        #Conditions for tackles and fouls to occur
+
+                        if player2.DMAG + dice_roll(20) > player1.WIS+dice_roll(20):
+                                print()
+                                print(player1.name,"gets tackled by",player2.name,"and loses the ball!")
+                                time.sleep(2)
+                                player1.takedmg()
+                                print()
+                                print("Hard to believe the referee let them get away with that one...")
+                                time.sleep(2)
+                                dice = dice_roll(8)
+                                if dice == 8:
+                                        fight(player1,player2)
+                                if player2.name in TeamA:
+                                        print()
+                                        print(Team1.name,"have the ball!")
+                                        time.sleep(2)
+                                        pos=[]
+                                        pos.append("TeamA")
+                                        
+                                
+                                elif player2.name in TeamB:
+                                        print()
+                                        print(Team2.name,"have the ball!")
+                                        time.sleep(2)
+                                        pos=[]
+                                        pos.append("TeamB")
+
+                                elif player10.name in TeamA:
+                                        print()
+                                        print(Team1.name,"have the ball!")
+                                        time.sleep(2)
+                                        pos=[]
+                                        pos.append("TeamA")
+                                        
+                                else:
+                                        print()
+                                        print(Team2.name,"have the ball!")
+                                        time.sleep(2)
+                                        pos=[]
+                                        pos.append("TeamB")
+                                        
+                        elif player2.STR+dice_roll(20) > player1.WIS+dice_roll(20): 
+                                print()
+                                print("* S M A S H *")
+                                time.sleep(2)
+                                print()
+                                print("Some obvious roughing from",player2.name,"results in a foul.")
+                                player1.takedmg()
+                                time.sleep(2)
+                                if player2.name in TeamA:
+                                        FoulA+=1
+                                        print()
+                                        #Foul console check
+                                        #print(Team1.name,"Fouls: ",FoulA)
+                                        time.sleep(1)
+                                else:
+                                        FoulB+=1
+                                        print()
+                                        #Foul console check
+                                        #print(Team2.name,"Fouls: ",FoulB)
+                                        time.sleep(1)
+                                if FoulA==3:
+                                        penalty()
+                                        FoulA=0
+                                if FoulB==3:
+                                        penalty()
+                                        FoulB=0
+
+                        #Huge set of conditions for different passing outcomes
+                        #This first set is a successful pass to a teammate.
+                        #It's followed by a bunch of code that checks the team's pass counter, and if the team makes four 
+                        #successful passes, the receiving Player of the fourth pass takes a shot.
+                        #I should have made all of that into a function because I call it a lot, but I didn't and here we are.
+
+                        if player1.STR+dice_roll(20) >= player2.STR+dice_roll(20): 
+                                print()
+                                print(player1.name,"gets the ball and launches it.")
+                                time.sleep(2)
+                                if player3.DEX+dice_roll(20)>=10:
+                                        print()
+                                        print(thirdname+" receives!")
+                                        time.sleep(1)
+                                        if player1.name in TeamA and player3.name in TeamA:
+                                                TeamAPass+=1
+                                                #Pass Count console check
+                                                #print(Team1.name, "pass count = ",TeamAPass)
+                                                time.sleep(2)
+                                                if TeamAPass == 4:
+                                                        print()
+                                                        print (player3.name,"makes a quick play!")
+                                                        time.sleep(2)
+                                                        print()
+                                                        print ("The",Team2.name,"keeper braces.")
+                                                        time.sleep(5)
+                                                        roll = dice_roll(20)
+                                                        kroll = dice_roll(20)
+                                                        if KeeperB.GK+kroll > player3.DEX+roll:
+                                                                print()
+                                                                print(KeeperB.name,"saves!")
+                                                                TeamAPass=0
+                                                                time.sleep(2)
+                                                        elif player3.DEX+roll >= 20:
+                                                                ScoreA+=4
+                                                                print()
+                                                                print(player3.name,"scores 4 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 15:
+                                                                ScoreA+=3
+                                                                print()
+                                                                print(player3.name,"scores 3 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 12:
+                                                                ScoreA+=2
+                                                                print()
+                                                                print(player3.name,"scores 2 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 10:
+                                                                ScoreA+=1
+                                                                print()
+                                                                print(player3.name,"scores 1 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        else:
+                                                                print()
+                                                                print("The ",Team2.name,"keeper blocks the shot!")
+                                                                TeamAPass=0
+                                                                time.sleep(2)
+                                                        
+                                        elif player1.name in TeamB and player3.name in TeamB:
+                                                
+                                                TeamBPass+=1
+                                                #Pass Count console check
+                                                #print(Team2.name,"pass count = ",TeamBPass)
+                                                time.sleep(2)
+                                                if TeamBPass == 4:
+                                                        print()
+                                                        print (player3.name,"sends it!")
+                                                        time.sleep(2)
+                                                        print()
+                                                        print("The",Team1.name,"keeper braces.")
+                                                        time.sleep(5)
+                                                        roll = dice_roll(20)
+                                                        kroll = dice_roll(20)
+                                                        if KeeperA.GK+kroll > player3.DEX+roll:
+                                                                print()
+                                                                print(KeeperA.name,"saves!")
+                                                                TeamBPass=0
+                                                                time.sleep(2)        
+                                                        elif player3.DEX+roll >= 20:
+                                                                ScoreB+=4
+                                                                print()
+                                                                print(player3.name,"scores 4 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 15:
+                                                                ScoreB+=3
+                                                                print()
+                                                                print(player3.name,"scores 3 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 12:
+                                                                ScoreB+=2
+                                                                print()
+                                                                print(player3.name,"scores 2 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 10:
+                                                                ScoreB+=1
+                                                                print()
+                                                                print(player3.name,"scores 1 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        else:
+                                                                print()
+                                                                print("The ",Team1.name,"keeper blocks the shot!")
+                                                                TeamBPass=0
+                                                                time.sleep(2)
+
+                                        #Interceptions occur when a pass happens and a player from the opposing team is in the receiving position
+                                                        
+                                        elif player1.name in TeamA and player3.name in TeamB:
+                                                TeamBPass+=1
+                                                print()
+                                                print("A nice interception for the",Team2.name,"!")
+                                                time.sleep(2)
+                                                print()
+                                                #Pass Count console check
+                                                #print(Team2.name," pass count = ",TeamBPass)
+                                                time.sleep(2)
+                                                if TeamBPass == 4:
+                                                        print()
+                                                        print (player3.name,"takes a shot!")
+                                                        time.sleep(2)
+                                                        print()
+                                                        print("The",Team1.name,"keeper braces.")
+                                                        time.sleep(5)
+                                                        roll = dice_roll(20)
+                                                        kroll = dice_roll(20)
+                                                        if KeeperA.GK+kroll > player3.DEX+roll:
+                                                                print()
+                                                                print(KeeperA.name,"saves!")
+                                                                TeamBPass=0
+                                                                time.sleep(2)
+                                                        elif player3.DEX+roll >= 20:
+                                                                ScoreB+=4
+                                                                print()
+                                                                print(player3.name,"scores 4 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 15:
+                                                                ScoreB+=3
+                                                                print()
+                                                                print(player3.name,"scores 3 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 12:
+                                                                ScoreB+=2
+                                                                print()
+                                                                print(player3.name,"scores 2 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        elif player3.DEX+roll >= 10:
+                                                                ScoreB+=1
+                                                                print()
+                                                                print(player3.name,"scores 1 for the",Team2.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamBPass=0
+                                                        else:
+                                                                print()
+                                                                print("The ",Team1.name,"keeper blocks the shot!")
+                                                                TeamBPass=0
+                                                                time.sleep(2)
+                                        else:
+                                                TeamAPass+=1
+                                                print()
+                                                print("A nice interception for the",Team1.name,"!")
+                                                time.sleep(2)
+                                                print()
+                                                #Pass count console check
+                                                #print(Team1.name,"pass count = ",TeamAPass)
+                                                time.sleep(2)
+                                                if TeamAPass == 4:
+                                                        print()
+                                                        print (player3.name,"takes a shot!")
+                                                        time.sleep(2)
+                                                        print()
+                                                        print("The",Team2.name,"keeper braces.")
+                                                        time.sleep(5)
+                                                        roll = dice_roll(20)
+                                                        kroll = dice_roll(20)
+                                                        if KeeperB.GK+kroll > player3.DEX+roll:
+                                                                print()
+                                                                print(KeeperB.name,"saves!")
+                                                                TeamAPass=0
+                                                                time.sleep(2)
+                                                        elif player3.DEX+roll >= 20:
+                                                                ScoreA+=4
+                                                                print()
+                                                                print(player3.name,"scores 4 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 15:
+                                                                ScoreA+=3
+                                                                print()
+                                                                print(player3.name,"scores 3 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 12:
+                                                                ScoreA+=2
+                                                                print()
+                                                                print(player3.name,"scores 2 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        elif player3.DEX+roll >= 10:
+                                                                ScoreA+=1
+                                                                print()
+                                                                print(player3.name,"scores 1 for the",Team1.name,"!")
+                                                                time.sleep(3)
+                                                                print()
+                                                                print(Team1.name, ": ",ScoreA)
+                                                                print()
+                                                                print(Team2.name, ": ",ScoreB)
+                                                                TeamAPass=0
+                                                        else:
+                                                                print()
+                                                                print("The ",Team2.name,"keeper blocks the shot!")
+                                                                TeamAPass=0
+                                                                time.sleep(2)                              
+                                
+                                #If neither a successful pass nor interception occur, the ball is fumbled.
+
+                                else:
+                                        print()
+                                        print(thirdname,"attempts a catch but fumbles the ball!")
+                                        time.sleep(1)
+                                        if (player4.name and player1.name in TeamA) or (player4.name and player1.name in TeamB):
+                                                print()
+                                                print(player4.name,"recovers the ball!")
+                                                time.sleep(2)
+                                                pos = []
+                                                if player4.name in TeamA:
+                                                        pos.append('TeamA')
+                                                else:
+                                                        pos.append('TeamB')
+
+                                        else:
+                                                print()
+                                                print(player4.name,"grabs the live ball!")
+                                                time.sleep(2)
+                                                pos = []
+                                                if player4.name in TeamA:
+                                                        pos.append('TeamA')
+                                                else:
+                                                        pos.append('TeamB')
+
+                                if player1.name not in newlist:
+                                        newlist.append(player1.name)
+                                if player2.name not in newlist:
+                                        newlist.append(player2.name)
+                                if player3.name not in newlist:
+                                        newlist.append(player3.name)
+
+                        #This condition occurs when Player 1 fails the strength test against Player 2
+                        
+                        else: 
+                                print()
+                                time.sleep(1)
+                                if silence <= 7:
+                                        silence +=1
+                                if silence == 9:
+                                        print("A peculiar silence falls over the crowd.")
+                                        print()
+                                        silence +=1
+                                if silence == 11:
+                                        print("The silence is palpable.")
+                                        print()
+                                        silence +=1
+                                        
+                                if silence == 13:
+                                        print("It appears our captains are dispensing Wisdom to their teams.")
+                                        print()
+                                        time.sleep(2)
+                                        silence = 0
+                                        die1=dice_roll(4)
+                                        die2=dice_roll(4)
+                                        Gifted = [PTeamA[die1],PTeamB[die2]]
+
+                                        #Implementation of Captains. Could do more here if Captain attribute was actually assigned to a specific player on each team.
+
+                                        for Player in Gifted:
+                                                wheel = ["X",Player.STR,Player.DEX,Player.WIS,Player.CHA,Player.MAG,Player.DMAG]
+                                                spin = dice_roll(6)
+                                                if spin == 1:
+                                                        Player.STR += 1
+                                                        print (Player.name,"feels a boost of energy!") 
+                                                        print()
+                                                        time.sleep(2)
+                                                if spin == 2:
+                                                        Player.DEX += 1
+                                                        print (Player.name,"gets an idea!")
+                                                        print()
+                                                        time.sleep(2)
+                                                if spin == 3:
+                                                        Player.WIS += 1
+                                                        print (Player.name, "understands.")
+                                                        print()
+                                                        time.sleep(2)
+                                                if spin == 4:
+                                                        Player.CHA += 1
+                                                        print (Player.name, "keeps spirit!")
+                                                        print()
+                                                        time.sleep(2)
+                                                if spin == 5:
+                                                        Player.MAG += 1
+                                                        print (Player.name, "learned a spell.")
+                                                        print()
+                                                        time.sleep(2)
+                                                if spin == 6:
+                                                        Player.DMAG += 1
+                                                        print (Player.name,"has a sly look about them.")
+                                                        print()
+                                                        time.sleep(2)
+
+                                        print("The Players take to the Pit!")
+                                        print()
+                                        time.sleep(2)
+                                        silence = 0
+                               
+                                gameloop()
+
+                        #Sets up conditions for surprise shots on the opponent's ring
+                        #When a team has a player in the first and second initiative position, they get a point
+                        #When a team has three of these points, the player in the second position takes a surprise shot of opportunity
+
+                        if player1.name in TeamA and player2.name in TeamA:
+                                        if Aruncount==0:
+                                                print()
+                                                print(player1.name, "positions themselves for a shot on the",Team2.name,"Ring!")
+                                                time.sleep(2)
+                                                Aruncount+=1
+                                        elif Aruncount==1:
+                                                print()
+                                                print("The",Team2.name,"look worried.")
+                                                time.sleep(2)
+                                                Aruncount+=1
+                                        elif Aruncount==2:
+                                                print()
+                                                print(Team2.name,"need to make a play to stop",player1.name,"!")
+                                                time.sleep(2)
+                                                Aruncount+=1
+                                        else:
+                                                time.sleep(2)
+                                                # print()
+                                                # print ("!A RUN TO THE MAX!")
+                                                print()
+                                                print(player2.name,"goes for the goal!")
+                                                print()
+                                                print ("The",Team2.name,"keeper braces.")
+                                                time.sleep(3)
+                                                roll = dice_roll(20)
+                                                kroll = dice_roll(20)
+                                                if KeeperB.GK+kroll > player2.DEX+roll:
+                                                        print()
+                                                        print(KeeperB.name,"saves!")
+                                                        TeamAPass=0
+                                                        time.sleep(2)
+                                                elif player2.DEX+roll >= 20:
+                                                        ScoreA+=4
+                                                        print()
+                                                        print(player2.name,"scores 4 for the",Team1.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamAPass=0
+                                                elif player2.DEX+roll >= 15:
+                                                        ScoreA+=3
+                                                        print()
+                                                        print(player2.name,"scores 3 for the",Team1.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamAPass=0
+                                                elif player2.DEX+roll >= 12:
+                                                        ScoreA+=2
+                                                        print()
+                                                        print(player2.name,"scores 2 for the",Team1.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamAPass=0
+                                                elif player2.DEX+roll >= 10:
+                                                        ScoreA+=1
+                                                        print()
+                                                        print(player2.name,"scores 1 for the",Team1.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamAPass=0
+                                                else:
+                                                        print()
+                                                        print("The",Team2.name,"keeper blocks the shot!")
+                                                        TeamAPass=0
+                                                        time.sleep(2)
+                                                Aruncount=0
+                        
+                        
+                        #Same code but for Team B        
+
+                        elif player1.name in TeamB and player2.name in TeamB:
+                                        if Bruncount==0:
+                                                print()
+                                                print(player1.name, "positions themselves for a shot on the",Team1.name,"Ring!")
+                                                time.sleep(2)
+                                                Bruncount+=1
+                                        elif Bruncount==1:
+                                                print()
+                                                print("The",Team1.name,"look worried.")
+                                                Bruncount+=1
+                                        elif Bruncount==2:
+                                                print()
+                                                print(Team1.name,"need to make a play to stop",player1.name,"!")
+                                                Bruncount+=1
+                                        else:   
+                                                time.sleep(2)
+                                                # print()
+                                                # print("!B RUN TO THE MAX!")
+                                                print()
+                                                print(player2.name,"goes for the goal!")
+                                                print()
+                                                print("The",Team1.name,"keeper braces.")
+                                                time.sleep(3)
+                                                roll = dice_roll(20)
+                                                kroll = dice_roll(20)
+                                                if KeeperA.GK+kroll > player2.DEX+roll:
+                                                        print()
+                                                        print(KeeperA.name,"saves!")
+                                                        TeamBPass=0
+                                                        time.sleep(2)        
+                                                elif player2.DEX+roll >= 20:
+                                                        ScoreB+=4
+                                                        print()
+                                                        print(player2.name,"scores 4 for the",Team2.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamBPass=0
+                                                elif player2.DEX+roll >= 15:
+                                                        ScoreB+=3
+                                                        print()
+                                                        print(player2.name,"scores 3 for the",Team2.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamBPass=0
+                                                elif player2.DEX+roll >= 12:
+                                                        ScoreB+=2
+                                                        print()
+                                                        print(player2.name,"scores 2 for the",Team2.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamBPass=0
+                                                elif player2.DEX+roll >= 10:
+                                                        ScoreB+=1
+                                                        print()
+                                                        print(player2.name,"scores 1 for the",Team2.name,"!")
+                                                        time.sleep(3)
+                                                        print()
+                                                        print(Team1.name, ": ",ScoreA)
+                                                        print()
+                                                        print(Team2.name, ": ",ScoreB)
+                                                        TeamBPass=0
+                                                else:
+                                                        print()
+                                                        print("The",Team1.name,"keeper blocks the shot!")
+                                                        TeamBPass=0
+                                                        time.sleep(2)
+                                                Bruncount=0
+                                        
+                        
+                        #Ensures that players don't tackle other players on their team   
+
+                        while player1.team == Team1name and player2.team == Team1name:
+                                move = (len(Ordered)-1)
+                                Ordered.pop(move)
+                                return Ordered
+                        #print()
+                        
+                        while player1.team == Team2name and player2.team == Team2name:
+                                move = (len(Ordered)-1)
+                                Ordered.pop(move)
+                                return Ordered
+                
+
+                        #Ensures players that appeared in this text loop are counted as having taken a turn (moved to newlist)
+
+                        if player1.name not in newlist:
+                                newlist.append(player1.name)
+                        if player2.name not in newlist:
+                                newlist.append(player2.name)
+                        if player3.name not in newlist:
+                                newlist.append(player3.name) 
+                
+                checks()
+
+                #Sets scores to current scores before looping again        
+                ScoreA=ScoreA
+                ScoreB=ScoreB         
+
+        #Creates loop that calls gameloop() for x amount of seconds and prints the final score when game time runs out
+        game = True
+        this=False
+        half=True
+        
+        while game == True:
+                half=False
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+
+                if seconds-elapsed_time >= 0:
+                        if elapsed_time < seconds-elapsed_time:
+                                last = round(seconds-elapsed_time)
+                                if round(seconds-elapsed_time) != round(last):
+                                        print()
+                                        print(round(seconds-elapsed_time))
+
+                # HALF TIME! HALF TIME! HALF TIME! (This makes Half Time work)
+
+                if elapsed_time >= 580 and elapsed_time <= 620:
+                        half=True
+
+
+                while half==True:
+                        tipoff = True
+                        print()
+                        print ("IT'S HALFTIME!")
+                        time.sleep(2)
+                        count=15
+                        while half == True:
+                                
+                                time.sleep(1)
+                                print()
+                                print(count)
+                                count-=1
+                                time.sleep(1)
+                                print()
+                                print("HALF!")
+                                time.sleep(1)
+                                print()
+                                print(count)
+                                time.sleep(1)
+                                count-=1
+                                print()
+                                print("TIME!")
+                                time.sleep(1)
+
+                                
+
+                                if count <= 0:
+                                        half=False
+
+                                        #Easy Coup Verification Team A
+                                        #PTeamA[1].CHA += 99
+                                        #PTeamA[1].MAG += 99
+                                        sustaincaptainA = True
+                                        samecaptA = True
+                                        for player in PTeamA:
+                                                if int(player.CHA) > int(captainB.CHA) and int(player.MAG) >= int(captainB.MAG):
+                                                        if player == captainA:
+                                                                print()
+                                                                print("No new captain takes the",Team1.name,"helm today!")
+                                                                time.sleep(2)
+                                                                print()
+                                                                print(captainA.name,"remains your team captain.")
+                                                                sustaincaptainA = True
+                                                        
+
+                                                        #Coup console check for Team A
+                                                        #print(player.name)
+
+                                                        if sustaincaptainA == False:
+                                                                newcapA = player
+                                                                captainA.captain = False
+                                                                player = captainA
+                                                                captainA.captain = True
+                                                                print()
+                                                                print ("It appears there has been a coup in the",Team1name,"locker room during Half Time...")
+                                                                time.sleep(2)
+                                                                print()
+                                                                print (captainA.name,"is your new",Team1name,"captain.")
+                                                                samecaptA = False
+                                                        else:
+                                                                samecaptA = True
+                                        if samecaptA == True:
+                                                hyped(Team1)
+                                                print("We'll see how they fare in the second half.")
+
+                                        #Easy Coup Verification Team B
+                                        #PTeamA[0].CHA += 99
+                                        #PTeamA[0].MAG += 99
+                                        sustaincaptainB = True
+                                        samecaptB = True
+                                        for player in PTeamB:
+                                                if int(player.CHA) > int(captainB.CHA) and int(player.MAG) >= int(captainB.MAG):
+                                                        if player == captainB:
+                                                                print()
+                                                                print("No new captain takes the",Team2.name,"helm today!")
+                                                                time.sleep(4)
+                                                                print()
+                                                                print(captainB.name,"remains your team captain.")
+                                                                sustaincaptainB = True
+                                                        
+
+                                                #Coup console check for Team B
+                                                #print(player.name)
+
+                                                if sustaincaptainB == False:
+                                                        newcapB = player
+                                                        captainB.captain = False
+                                                        player = captainB
+                                                        captainB.captain = True
+                                                        print()
+                                                        print ("It appears there has been a coup in the",Team2name,"locker room during Half Time...")
+                                                        time.sleep(2)
+                                                        print()
+                                                        print (captainB.name,"is your new",Team2name,"captain.")
+                                                        samecaptB = False
+                                                else:
+                                                        samecaptB = True
+                                        if samecaptB == True:
+                                                hyped(Team2)
+                                                print("We'll see how they fare in the second half.")
+                                        
+                                        tipoff = True
+                                        struggle()
+
+                                        gameloop()      
+                                                        
+
+
+                gameloop()
+
+                
+                #Prints score and winning team at the end of the game time. Counts 30 seconds and then starts a new game.
+
+                if elapsed_time>seconds:
+                        print()
+                        print("The Game has ended.")
+                        print()
+                        print(Team1.name,": ",ScoreA)
+                        print()
+                        print(Team2.name,": ",ScoreB)
+                        if ScoreA>ScoreB:
+                                print()
+                                print(Team1.name,"win the Game.")
+                        elif ScoreA<ScoreB:
+                                print()
+                                print(Team2.name,"win the Game.")
+                        else:
+                                print()
+                                print("The Game ends in a tie.")
+
+                        game = False
+                        count = 30
+                        this=True   
+                while this == True:
+                        time.sleep(1)
+                        count = count-1
+                        print()
+                        print(count)
+                        if count <= 0:
+                                
+                                print()
+                                print ("Well, I guess that's tipoff")
+                                time.sleep(2)
+                                this =False
+                                seconds = 1200
+                                randomize +=1
+                                game = False
+
+        
+
+        
+
+
+
