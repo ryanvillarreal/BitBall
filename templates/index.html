@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Bitball</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      .container {
+        max-width: 500px;
+        padding-top: 100px;
+      }
+    </style>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+
+            namespace = '/bitball';
+            var socket = io(namespace);
+
+            socket.on('connect', function() {
+                socket.emit('my_event', {data: 'connected to the SocketServer...'});
+            });
+
+            socket.on('my_response', function(msg) {
+                $('#log').append('<br>' + $('<div/>').text('logs #' + msg.data).html());
+            });
+        });
+    </script>
+</head>
+<body style="background-color:#34495e;">
+    <h1 style="color:#ecf0f1;background-color:#34495e; ">Welcome to BitBall!</h1>
+    <h2 style="color:#ecf0f1;background-color:#34495e;">Games</h2>
+    <div style="color:#ecf0f1;" id="log" ></div>
+</body>
+</html>
