@@ -18,11 +18,11 @@
             var socket = io(namespace);
 
             socket.on('connect', function() {
-                socket.emit('my_event', {data: 'connected to the SocketServer...'});
+                socket.emit('my_event', {data: 'Connected to the SocketServer...'});
             });
 
             socket.on('my_response', function(msg) {
-                $('#log').append('<br>' + $('<div/>').text('logs #' + msg.data).html());
+                $('#log').append('<br>' + $('<div/>').text('Event: ' + msg.data).html());
             });
         });
     </script>

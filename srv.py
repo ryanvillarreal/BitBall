@@ -1,5 +1,4 @@
 from flask import Flask, render_template, session, copy_current_request_context, current_app
-from flask_executor import Executor
 from flask_socketio import SocketIO, emit, disconnect
 from threading import Lock
 from threading import Thread
@@ -9,30 +8,40 @@ async_mode = None
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Letsplaybitball!'
 socket_ = SocketIO(app, async_mode=async_mode)
-executor = Executor(app)
 thread = None
 thread_lock = Lock()
 
-################################# Bitball goes hurr
+
+################################ Bitball goes hurr ###########################
+# emulate a background_thread that is constantly running creating new exciting events
 def background_stuff():
-     print ('In background_stuff')
      while True:
-        print('running bitball actions')
-        with app.test_request_context('/'):
-            print(app.name)
-            test_msg = ["sure"]
-            test_message(test_msg[0])
-        time.sleep(5)
+        send_msg(str(random.randint(0,10)))
+        time.sleep(1)
+
+
+################################ handle msg sending here
+def send_msg(msg):
+    with app.app_context():
+        msg_package = {'data': msg}
+        #print('Sending MSG to Clients: ' + msg)
+        emit('my_response', msg_package, namespace='/bitball', broadcast=True)
 
 ################################### Flask schtuff
+
+# load the template folder index.html - handle any HTTP/HTML stuff here
+# will eventually need some more configurations for hosting
 @app.route('/')
 def index():
     return render_template('index.html', async_mode=socket_.async_mode)
 
+
+# define the socket actions. connect/my_event/broadcast_event/disconnect
+# this should be the methods called for writing to the screen from the main bitball code.
 @socket_.on('connect', namespace='/bitball')
 def on_connect():
-    print("connected server!!")
-    emit('my_response',{'data': 'Connected!'})
+    print("A Client Connected to the server!!")
+    emit('my_response',{'data': 'Connected to Socket Server!'})
 
 
 @socket_.on('my_event', namespace='/bitball')
@@ -54,10 +63,16 @@ def disconnect_request():
     emit('my_response',{'data': 'Disconnected!'},callback=can_disconnect)
 
 
+def start_srv():
+    socket_.run(app,debug=True,use_reloader=False)
+
+
 # running main
 if __name__ == '__main__':
     #starting the bitball actions in the background so it will always run - will eventually need to make this safer to run
     x = Thread(target=background_stuff)
     x.start()
+
+    
     # start the flask app for connections
     socket_.run(app,debug=True)
