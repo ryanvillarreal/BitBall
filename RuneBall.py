@@ -1,7 +1,18 @@
 
+import pyttsx3
 import random
 import time
 import sqlite3
+
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)  # set the voice to the first voice in the list
+
+
+engine = pyttsx3.init()
+commentary =("Welcome to Rune Ball")
+engine.say(commentary)
+engine.runAndWait() 
 
 while True:
 
@@ -9,7 +20,7 @@ while True:
         C=conn.cursor()
 
         teams=['Wizards',
-        'Warriors','Kobolds','Beasts']
+        'Warriors','Kobolds','Beasts','Souls']
 
         #Define function that returns the mascot of team in parameters. Used to append to player names for team identification in gameplay.
 
@@ -717,6 +728,9 @@ while True:
                                 time.sleep(2)
                                 
                                 print("(The",Team2.name,"keeper braces as they watch helplessly)" ,"\n")
+                                commentary =("The",Team2.name,"keeper braces as they watch helplessly.")
+                                engine.say(commentary)
+                                engine.runAndWait()
                                 time.sleep(2)
                                 roll = dice_roll(20)
 
@@ -725,11 +739,19 @@ while True:
                                         ScoreA+=4
                                         
                                         print("🧿",player1.name,"scores 4 for the",Team1.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 4 for the",Team1.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         roll = dice_roll(3)
                                         if roll == 3:
                                                 if player1.team == Team1name:
@@ -743,31 +765,55 @@ while True:
                                         ScoreA+=3
                                         
                                         print("🧿",player1.name,"scores 3 for the",Team1.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 3 for the",Team1.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                        
                                 elif player1.MAG+roll >= 15:
                                         ScoreA+=2
                                         
                                         print("🧿",player1.name,"scores 2 for the",Team1.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 2 for the",Team1.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         
                                 elif player1.MAG+roll >= 10:
                                         ScoreA+=1
                                         
                                         print("🧿",player1.name,"scores 1 for the",Team1.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 1 for the",Team1.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         
                                 else:
                                         
@@ -807,6 +853,10 @@ while True:
                                 time.sleep(2)
                                 
                                 print("(The",Team1.name,"keeper braces as they watch helplessly)" ,"\n")
+                                commentary =("The",Team1.name,"keeper braces as they watch helplessly.")
+                                engine.say(commentary)
+                                engine.runAndWait()
+                                
                                 time.sleep(2)
                                 roll = dice_roll(20)
                 
@@ -815,11 +865,19 @@ while True:
                                         ScoreB+=4
                                         
                                         print("🧿",player1.name,"scores 4 for the",Team2.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 4 for the",Team2.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         roll = dice_roll(3)
                                         if roll == 3:
                                                 if player1.team == Team1name:
@@ -833,31 +891,55 @@ while True:
                                         ScoreB+=3
                                         
                                         print("🧿",player1.name,"scores 3 for the",Team2.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 3 for the",Team2.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         
                                 elif player1.MAG+roll >= 15:
                                         ScoreB+=2
                                         
                                         print("🧿",player1.name,"scores 2 for the",Team2.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 2 for the",Team2.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         
                                 elif player1.MAG+roll >= 10:
                                         ScoreB+=1
                                         
                                         print("🧿",player1.name,"scores 1 for the",Team2.name,"!" ,"\n")
+                                        commentary =(player1.name,"scores 1 for the",Team2.name,"!")
+                                        engine.say(commentary)
+                                        engine.runAndWait()
                                         time.sleep(2)
                                         
                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                        engine.say(Team1.name,ScoreA)
+                                        engine.runAndWait()
                                         
                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                        engine.say(Team2.name,ScoreB)
+                                        engine.runAndWait()
+                                        
                                         
                                 else:
                                         
@@ -1082,54 +1164,91 @@ while True:
                                                         time.sleep(2)
                                                         
                                                         print("The",Team2.name,"keeper braces." ,"\n")
+                                                        commentary =("The",Team2.name,"keeper braces.")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         roll = dice_roll(20)
                                                         kroll = dice_roll(20)
                                                         if KeeperB.GK+kroll > player3.DEX+roll:
                                                                 
                                                                 print(KeeperB.name,"saves!" ,"\n")
+                                                                engine.say(KeeperB.name,"saves!" )
+                                                                engine.runAndWait()
                                                                 TeamAPass=0
                                                                 time.sleep(2)
                                                         elif player3.DEX+roll >= 20:
                                                                 ScoreA+=4
                                                                 
                                                                 print("🧿",player3.name,"scores 4 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 4 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                                 player3.hyped()
                                                         elif player3.DEX+roll >= 15:
                                                                 ScoreA+=3
                                                                 
                                                                 print("🧿",player3.name,"scores 3 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 3 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         elif player3.DEX+roll >= 12:
                                                                 ScoreA+=2
                                                                 
                                                                 print("🧿",player3.name,"scores 2 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 2 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         elif player3.DEX+roll >= 10:
                                                                 ScoreA+=1
                                                                 
                                                                 print("🧿",player3.name,"scores 1 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 1 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         else:
                                                                 
@@ -1149,54 +1268,91 @@ while True:
                                                         time.sleep(2)
                                                         
                                                         print("The",Team1.name,"keeper braces." ,"\n")
+                                                        commentary =("The",Team1.name,"keeper braces.")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         roll = dice_roll(20)
                                                         kroll = dice_roll(20)
                                                         if KeeperA.GK+kroll > player3.DEX+roll:
                                                                 
                                                                 print(KeeperA.name,"saves!" ,"\n")
+                                                                engine.say(KeeperA.name,"saves!" )
+                                                                engine.runAndWait()
                                                                 TeamBPass=0
                                                                 time.sleep(2)        
                                                         elif player3.DEX+roll >= 20:
                                                                 ScoreB+=4
                                                                 
                                                                 print("🧿",player3.name,"scores 4 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 4 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                                 player3.hyped()
                                                         elif player3.DEX+roll >= 15:
                                                                 ScoreB+=3
                                                                 
                                                                 print("🧿",player3.name,"scores 3 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 3 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         elif player3.DEX+roll >= 12:
                                                                 ScoreB+=2
                                                                 
                                                                 print("🧿",player3.name,"scores 2 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 2 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         elif player3.DEX+roll >= 10:
                                                                 ScoreB+=1
                                                                 
                                                                 print("🧿",player3.name,"scores 1 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 1 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         else:
                                                                 
@@ -1210,6 +1366,9 @@ while True:
                                                 TeamBPass+=1
                                                 
                                                 print("A nice interception for the",Team2.name+"!" ,"\n")
+                                                commentary =("A nice interception for the",Team2.name+"!")
+                                                engine.say(commentary)
+                                                engine.runAndWait
                                                 time.sleep(2)
                                                 #Pass Count console check
                                                 #print(Team2.name," pass count = ",TeamBPass ,"\n")
@@ -1220,54 +1379,91 @@ while True:
                                                         time.sleep(2)
                                                         
                                                         print("The",Team1.name,"keeper braces." ,"\n")
+                                                        commentary =("The",Team1.name,"keeper braces.")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         roll = dice_roll(20)
                                                         kroll = dice_roll(20)
                                                         if KeeperA.GK+kroll > player3.DEX+roll:
                                                                 
                                                                 print(KeeperA.name,"saves!" ,"\n")
+                                                                engine.say(KeeperA.name,"saves!" )
+                                                                engine.runAndWait()
                                                                 TeamBPass=0
                                                                 time.sleep(2)
                                                         elif player3.DEX+roll >= 20:
                                                                 ScoreB+=4
                                                                 
                                                                 print("🧿",player3.name,"scores 4 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 4 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                                 player3.hyped()
                                                         elif player3.DEX+roll >= 15:
                                                                 ScoreB+=3
                                                                 
                                                                 print("🧿",player3.name,"scores 3 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 3 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         elif player3.DEX+roll >= 12:
                                                                 ScoreB+=2
                                                                 
                                                                 print("🧿",player3.name,"scores 2 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 2 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         elif player3.DEX+roll >= 10:
                                                                 ScoreB+=1
                                                                 
                                                                 print("🧿",player3.name,"scores 1 for the",Team2.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 1 for the",Team2.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamBPass=0
                                                         else:
                                                                 
@@ -1278,6 +1474,9 @@ while True:
                                                 TeamAPass+=1
                                                 
                                                 print("A nice interception for the",Team1.name+"!" ,"\n")
+                                                commentary =("A nice interception for the",Team1.name+"!")
+                                                engine.say(commentary)
+                                                engine.runAndWait
                                                 time.sleep(2)
                                                 #Pass count console check
                                                 #print(Team1.name,"pass count = ",TeamAPass ,"\n")
@@ -1288,54 +1487,91 @@ while True:
                                                         time.sleep(2)
                                                         
                                                         print("The",Team2.name,"keeper braces." ,"\n")
+                                                        commentary =("The",Team2.name,"keeper braces.")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         roll = dice_roll(20)
                                                         kroll = dice_roll(20)
                                                         if KeeperB.GK+kroll > player3.DEX+roll:
                                                                 
                                                                 print(KeeperB.name,"saves!" ,"\n")
+                                                                engine.say(KeeperB.name,"saves!" )
+                                                                engine.runAndWait()
                                                                 TeamAPass=0
                                                                 time.sleep(2)
                                                         elif player3.DEX+roll >= 20:
                                                                 ScoreA+=4
                                                                 
                                                                 print("🧿",player3.name,"scores 4 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 4 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                                 player3.hyped()
                                                         elif player3.DEX+roll >= 15:
                                                                 ScoreA+=3
                                                                 
                                                                 print("🧿",player3.name,"scores 3 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 3 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         elif player3.DEX+roll >= 12:
                                                                 ScoreA+=2
                                                                 
                                                                 print("🧿",player3.name,"scores 2 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 2 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         elif player3.DEX+roll >= 10:
                                                                 ScoreA+=1
                                                                 
                                                                 print("🧿",player3.name,"scores 1 for the",Team1.name,"!" ,"\n")
+                                                                commentary =(player3.name,"scores 1 for the",Team1.name,"!")
+                                                                engine.say(commentary)
+                                                                engine.runAndWait()
                                                                 time.sleep(2)
                                                                 
                                                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                                                engine.say(Team1.name,ScoreA)
+                                                                engine.runAndWait()
                                                                 
                                                                 print(Team2.name, ": ",ScoreB ,"\n")
+                                                                engine.say(Team2.name,ScoreB)
+                                                                engine.runAndWait()
+                                                                
                                                                 TeamAPass=0
                                                         else:
                                                                 
@@ -1468,54 +1704,91 @@ while True:
                                                 print(player2.name,"takes the ball and goes for the goal!" ,"\n")
                                                 
                                                 print("The",Team2.name,"keeper braces." ,"\n")
+                                                commentary =("The",Team2.name,"keeper braces.")
+                                                engine.say(commentary)
+                                                engine.runAndWait()
                                                 time.sleep(2)
                                                 roll = dice_roll(20)
                                                 kroll = dice_roll(20)
                                                 if KeeperB.GK+kroll > player2.DEX+roll:
                                                         
                                                         print(KeeperB.name,"saves!" ,"\n")
+                                                        engine.say(KeeperB.name,"saves!" )
+                                                        engine.runAndWait()
                                                         TeamAPass=0
                                                         time.sleep(2)
                                                 elif player2.DEX+roll >= 20:
                                                         ScoreA+=4
                                                         
                                                         print("🧿",player2.name,"scores 4 for the",Team1.name,"!" ,"\n")
+                                                        commentary = (player2.name,"scores 4 for the",Team1.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamAPass=0
                                                         player2.hyped()
                                                 elif player2.DEX+roll >= 15:
                                                         ScoreA+=3
                                                         
                                                         print("🧿",player2.name,"scores 3 for the",Team1.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 3 for the",Team1.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
-                                                        
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
+        
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamAPass=0
                                                 elif player2.DEX+roll >= 12:
                                                         ScoreA+=2
                                                         
                                                         print("🧿",player2.name,"scores 2 for the",Team1.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 2 for the",Team1.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamAPass=0
                                                 elif player2.DEX+roll >= 10:
                                                         ScoreA+=1
                                                         
                                                         print("🧿",player2.name,"scores 1 for the",Team1.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 1 for the",Team1.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamAPass=0
                                                 else:
                                                         
@@ -1549,54 +1822,91 @@ while True:
                                                 print(player2.name,"takes the ball and goes for the goal!" ,"\n")
                                                 
                                                 print("The",Team1.name,"keeper braces." ,"\n")
+                                                commentary =("The",Team1.name,"keeper braces.")
+                                                engine.say(commentary)
+                                                engine.runAndWait()
                                                 time.sleep(2)
                                                 roll = dice_roll(20)
                                                 kroll = dice_roll(20)
                                                 if KeeperA.GK+kroll > player2.DEX+roll:
                                                         
                                                         print(KeeperA.name,"saves!" ,"\n")
+                                                        engine.say(KeeperA.name,"saves!" )
+                                                        engine.runAndWait()
                                                         TeamBPass=0
                                                         time.sleep(2)        
                                                 elif player2.DEX+roll >= 20:
                                                         ScoreB+=4
                                                         
                                                         print("🧿",player2.name,"scores 4 for the",Team2.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 4 for the",Team2.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamBPass=0
                                                         player2.hyped()
                                                 elif player2.DEX+roll >= 15:
                                                         ScoreB+=3
                                                         
                                                         print("🧿",player2.name,"scores 3 for the",Team2.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 3 for the",Team2.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamBPass=0
                                                 elif player2.DEX+roll >= 12:
                                                         ScoreB+=2
                                                         
                                                         print("🧿",player2.name,"scores 2 for the",Team2.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 2 for the",Team2.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamBPass=0
                                                 elif player2.DEX+roll >= 10:
                                                         ScoreB+=1
                                                         
                                                         print("🧿",player2.name,"scores 1 for the",Team2.name,"!" ,"\n")
+                                                        commentary =(player2.name,"scores 1 for the",Team2.name,"!")
+                                                        engine.say(commentary)
+                                                        engine.runAndWait()
                                                         time.sleep(2)
                                                         
                                                         print(Team1.name, ": ",ScoreA ,"\n")
+                                                        engine.say(Team1.name,ScoreA)
+                                                        engine.runAndWait()
                                                         
                                                         print(Team2.name, ": ",ScoreB ,"\n")
+                                                        engine.say(Team2.name,ScoreB)
+                                                        engine.runAndWait()
+                                                        
                                                         TeamBPass=0
                                                 else:
                                                         
@@ -1786,6 +2096,8 @@ while True:
                                 print(Team1name,"are awarded an additional point for their determination! \n")
                                 time.sleep(2)
                                 print(Team1.name, ": ",ScoreA ,"\n")
+                                engine.say(Team1.name,ScoreA)
+                                engine.runAndWait()
 
                         def gettcountB():
                                 tcountB = []
