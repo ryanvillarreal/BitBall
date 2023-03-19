@@ -23,7 +23,6 @@ while True:
         'Warriors','Kobolds','Beasts','Souls']
 
         #Define function that returns the mascot of team in parameters. Used to append to player names for team identification in gameplay.
-
         def teamtag(team):
                 teamtag = team.upper()
                 return teamtag
@@ -37,7 +36,6 @@ while True:
                        
 
         #Define dice_roll function that accepts one argument that is equal to number of sides on dice rolled
-
         def dice_roll(d):
                 result = random.randint(1,d)
                 return result
@@ -2149,3 +2147,5 @@ while True:
 
 
 
+if __name__ == "__main__":
+        
