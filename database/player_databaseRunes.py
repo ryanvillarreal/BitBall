@@ -1,5 +1,5 @@
 import sqlite3
-conn = sqlite3.connect('player_database.db')
+conn = sqlite3.connect('player.db')
 c = conn.cursor()
 # Creates a table for Players
 c.execute("""CREATE TABLE players (
